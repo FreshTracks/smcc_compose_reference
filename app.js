@@ -56,11 +56,11 @@ const Api = ({api_host, api_token}) => {
   const getJSON = (endpoint, data) => $.getJSON(api_host + endpoint, merge({api_token: api_token}, data));
 
   return {
-    fetchBroadcastPlacardCounts: (selections) => getJSON("/broadcasts/placard_counts", selections),
-    fetchChannels:               ()           => getJSON("/channels"),
-    fetchPublishableGroups:      ()           => getJSON("/groups/publishable"),
-    fetchPublishableSubchannels: ()           => getJSON("/subchannels/publishable"),
-    fetchPublishableUsers:       ()           => getJSON("/users/publishable"),
+    fetchBroadcastRecipientCounts: (selections) => getJSON("/broadcasts/recipient_counts", selections),
+    fetchChannels:                 ()           => getJSON("/channels"),
+    fetchPublishableGroups:        ()           => getJSON("/groups/publishable"),
+    fetchPublishableSubchannels:   ()           => getJSON("/subchannels/publishable"),
+    fetchPublishableUsers:         ()           => getJSON("/users/publishable"),
   };
 };
 
@@ -74,7 +74,7 @@ const api_token = "wy6H8xRL-61PEQEwc7mC";
 
 
 const {
-  fetchBroadcastPlacardCounts,
+  fetchBroadcastRecipientCounts,
   fetchChannels,
   fetchPublishableGroups,
   fetchPublishableSubchannels,
@@ -119,7 +119,7 @@ function mainExample1() {
   // Attach Event Listeners
   $root.on("change", ".RecipientSelectionItem", ({currentTarget}) => {
     const {recipientSelectionType, recipientSelectionId} = $(currentTarget).data();
-    store.dispatch(onRecipientSelectionItemChange(fetchBroadcastPlacardCounts,
+    store.dispatch(onRecipientSelectionItemChange(fetchBroadcastRecipientCounts,
                                                   recipientSelectionType,
                                                   $hasInputChecked(currentTarget),
                                                   [recipientSelectionId]));
@@ -127,14 +127,14 @@ function mainExample1() {
 
   $root.on("change", ".QuickpickSubchannelItem", ({currentTarget}) => {
     const { channelName } = $(currentTarget).data();
-    store.dispatch(onQuickpickSubchannelItemChange(fetchBroadcastPlacardCounts,
+    store.dispatch(onQuickpickSubchannelItemChange(fetchBroadcastRecipientCounts,
                                                    channelName,
                                                    $hasInputChecked(currentTarget)));
   });
 
   $root.on("change", ".ChannelFilterItem", ({currentTarget}) => {
     const { channelId } = $(currentTarget).data();
-    store.dispatch(onChannelFilterItemChange(fetchBroadcastPlacardCounts,
+    store.dispatch(onChannelFilterItemChange(fetchBroadcastRecipientCounts,
                                              channelId,
                                              $hasInputChecked(currentTarget)));
   });

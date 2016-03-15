@@ -27,11 +27,11 @@ root.Templates = {
 
 
 function Example1({channels, postMode, recipientsDropdownToggle, socialBlast, socialPost}) {
-  const { publishable, selections, placardCounts } = {socialBlast, socialPost}[postMode];
+  const { publishable, selections, recipientCounts } = {socialBlast, socialPost}[postMode];
 
   return BSCard({cardHeader: "Example 1 - Recipient Selector"},
                 RecipientSelector(PostModeSelector(postMode),
-                                  PlacardCountList(placardCounts),
+                                  RecipientCountList(recipientCounts),
                                   RecipientsDropdown({recipientsDropdownToggle},
                                                      RecipientSelectionTools(channels,
                                                                              postMode,
@@ -49,7 +49,7 @@ function Example2(effectiveMsgCharCount, {channels, postAssets}) {
 }
 
 
-function RecipientSelector(postModeSelector, placardCountList, recipientsDropdown) {
+function RecipientSelector(postModeSelector, recipientCountList, recipientsDropdown) {
   return (`
     <div class="${RecipientSelector.name}">
       <div class="btn-toolbar">
@@ -57,7 +57,7 @@ function RecipientSelector(postModeSelector, placardCountList, recipientsDropdow
           ${postModeSelector}
           ${recipientsDropdown}
         </div>
-        ${placardCountList}
+        ${recipientCountList}
       </div>
     </div>
   `);
@@ -80,17 +80,17 @@ function PostModeSelector(postMode) {
 }
 
 
-const PlacardCountList = (placardCounts) => {
+const RecipientCountList = (recipientCounts) => {
   return (`
     <div class="btn-group dropdown">
-      ${joinMarkup(map(PlacardCountItem, placardCounts))}
+      ${joinMarkup(map(RecipientCountItem, recipientCounts))}
     </div>
   `);
 };
 
 
-const PlacardCountItem = ([channelName, count]) => (`
-  <div class="${PlacardCountItem.name} btn btn-secondary btn-no-intercation">
+const RecipientCountItem = ([channelName, count]) => (`
+  <div class="${RecipientCountItem.name} btn btn-secondary btn-no-intercation">
     ${SocialIcon(channelName)}
     <span class="label label-default">${count}</span>
   </div>

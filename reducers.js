@@ -18,7 +18,7 @@ const {
   DESCRIPTION_INPUT,
   DETECT_SHARED_LINK,
   DISMISS_SHARED_LINK,
-  FETCHED_BROADCAST_PLACARD_COUNTS,
+  FETCHED_BROADCAST_RECIPIENT_COUNTS,
   FETCHED_CHANNELS,
   FETCHED_PROCURE_POST_ASSETS,
   FETCHED_PUBLISHABLE_GROUPS,
@@ -88,7 +88,7 @@ const broadcastComposerState = handleActions([
 
 
 const recipientSelectorState = handleActions([
-  [FETCHED_BROADCAST_PLACARD_COUNTS, (state, action) => set([state.postMode, "placardCounts"], action.payload, state)],
+  [FETCHED_BROADCAST_RECIPIENT_COUNTS, (state, action) => set([state.postMode, "recipientCounts"], action.payload, state)],
   [FETCHED_CHANNELS,                  mergeActionPayload],
   [FETCHED_PUBLISHABLE_GROUPS,        mergeActionPayload],
   [FETCHED_PUBLISHABLE_SUBCHANNELS,   mergeActionPayload],
@@ -100,8 +100,8 @@ const recipientSelectorState = handleActions([
   channels: {},
   postMode: "socialPost",
   recipientsDropdownToggle: false,
-  socialBlast: {selections: {}, publishable: {}, placardCounts: {}},
-  socialPost:  {selections: {}, publishable: {}, placardCounts: {}},
+  socialBlast: {selections: {}, publishable: {}, recipientCounts: {}},
+  socialPost:  {selections: {}, publishable: {}, recipientCounts: {}},
 });
 
 
