@@ -18,7 +18,6 @@ const {
   mapValues,
   pickBy,
   sortBy,
-  toPairs,
 } = _;
 
 
@@ -89,24 +88,23 @@ const debouncedOnDetectSharedLink = actionDebounce(1000, (extractUris, procurePo
 });
 
 
-const debouncedOnFetchedBroadcastRecipientCounts = actionDebounce(0, (fetchBroadcastRecipientCounts) => (dispatch, getState) => {
+const debouncedOnFetchedBroadcastRecipientCounts = actionDebounce(0, (fetchRecipientCounts) => (dispatch, getState) => {
   const { postMode, socialBlast, socialPost } = getState();
   const { selections } = {socialBlast, socialPost}[postMode];
   const selectedIdsFn  = flow(mapKeys((type) => `selected_${type}_ids`),
                               mapValues(flow(pickBy(eq(true)), keys)));
-
-  fetchBroadcastRecipientCounts({broadcast: selectedIdsFn(selections)}).done((recipientCountsJson) => {
+  fetchRecipientCounts(selectedIdsFn(selections)).done((recipientCountsJson) => {
     dispatch({
       type: FETCHED_BROADCAST_RECIPIENT_COUNTS,
-      payload: toPairs(recipientCountsJson.data)
+      payload: recipientCountsJson.data
     });
   });
 });
 
 
-function onChannelFilterItemChange(fetchBroadcastRecipientCounts, channelId, isSelected) {
+function onChannelFilterItemChange(fetchRecipientCounts, channelId, isSelected) {
   return (dispatch) => {
-    dispatch(onRecipientSelectionItemChange(fetchBroadcastRecipientCounts,
+    dispatch(onRecipientSelectionItemChange(fetchRecipientCounts,
                                             "channel",
                                             isSelected,
                                             [channelId]));
@@ -214,13 +212,13 @@ function onPostModeChange(postMode) {
 }
 
 
-function onQuickpickSubchannelItemChange(fetchBroadcastRecipientCounts, channelName, isSelected) {
+function onQuickpickSubchannelItemChange(fetchRecipientCounts, channelName, isSelected) {
   return (dispatch, getState) => {
     const { postMode, socialBlast, socialPost } = getState();
     const { publishable: { subchannel: publishableSubchannels } } = {socialBlast, socialPost}[postMode];
     const subchannelIds = map(get("id"), filter(flow(get("channel_name"), eq(channelName)), publishableSubchannels));
 
-    dispatch(onRecipientSelectionItemChange(fetchBroadcastRecipientCounts,
+    dispatch(onRecipientSelectionItemChange(fetchRecipientCounts,
                                             "subchannel",
                                             isSelected,
                                             subchannelIds));
@@ -242,7 +240,7 @@ function onRecipientsDropdownToggle() {
 }
 
 
-function onRecipientSelectionItemChange(fetchBroadcastRecipientCounts, recipientSelectionType, recipientIsSelected, recipientSelectionIds) {
+function onRecipientSelectionItemChange(fetchRecipientCounts, recipientSelectionType, recipientIsSelected, recipientSelectionIds) {
   return (dispatch, getState) => {
     const { postMode } = getState();
 
@@ -257,7 +255,7 @@ function onRecipientSelectionItemChange(fetchBroadcastRecipientCounts, recipient
       }
     });
 
-    dispatch(debouncedOnFetchedBroadcastRecipientCounts(fetchBroadcastRecipientCounts));
+    dispatch(debouncedOnFetchedBroadcastRecipientCounts(fetchRecipientCounts));
   };
 }
 

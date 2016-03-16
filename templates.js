@@ -374,7 +374,7 @@ function ChannelCharCountLabel(charCount = [0,0]) {
 
 function SocialIcon(channelName, type = "subchannel", subchannelType = 0) {
   return (`
-    <i class="${SocialIcon.name} fa ${type} ${channelName} subchannel-type-${subchannelType}"></i>
+    <i class="${SocialIcon.name} fa ${type}s ${channelName} subchannel-type-${subchannelType}"></i>
   `);
 }
 
