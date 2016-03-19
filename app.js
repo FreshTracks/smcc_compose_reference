@@ -85,11 +85,11 @@ const {
   extractUris,
   effectiveMsgCharCount,
   postPreview,
-} = LumSoc.init();
+} = LumSoc;
 
 const {
   procurePostAssets
-} = LumSoc.init().endpoints({api_host, api_token});
+} = LumSoc.endpoints({api_host, api_token});
 
 
 function renderExample1($root, store) {
