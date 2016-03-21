@@ -18,7 +18,6 @@ const {
   mapValues,
   pickBy,
   sortBy,
-  toPairs,
 } = _;
 
 
@@ -26,7 +25,7 @@ const {
   DESCRIPTION_INPUT,
   DETECT_SHARED_LINK,
   DISMISS_SHARED_LINK,
-  FETCHED_BROADCAST_PLACARD_COUNTS,
+  FETCHED_BROADCAST_RECIPIENT_COUNTS,
   FETCHED_CHANNELS,
   FETCHED_PROCURE_POST_ASSETS,
   FETCHED_PUBLISHABLE_GROUPS,
@@ -89,24 +88,23 @@ const debouncedOnDetectSharedLink = actionDebounce(1000, (extractUris, procurePo
 });
 
 
-const debouncedOnFetchedBroadcastPlacardCounts = actionDebounce(0, (fetchBroadcastPlacardCounts) => (dispatch, getState) => {
+const debouncedOnFetchedBroadcastRecipientCounts = actionDebounce(0, (fetchRecipientCounts) => (dispatch, getState) => {
   const { postMode, socialBlast, socialPost } = getState();
   const { selections } = {socialBlast, socialPost}[postMode];
   const selectedIdsFn  = flow(mapKeys((type) => `selected_${type}_ids`),
                               mapValues(flow(pickBy(eq(true)), keys)));
-
-  fetchBroadcastPlacardCounts({broadcast: selectedIdsFn(selections)}).done((placardCountsJson) => {
+  fetchRecipientCounts(selectedIdsFn(selections)).done((recipientCountsJson) => {
     dispatch({
-      type: FETCHED_BROADCAST_PLACARD_COUNTS,
-      payload: toPairs(placardCountsJson.data)
+      type: FETCHED_BROADCAST_RECIPIENT_COUNTS,
+      payload: recipientCountsJson.data
     });
   });
 });
 
 
-function onChannelFilterItemChange(fetchBroadcastPlacardCounts, channelId, isSelected) {
+function onChannelFilterItemChange(fetchRecipientCounts, channelId, isSelected) {
   return (dispatch) => {
-    dispatch(onRecipientSelectionItemChange(fetchBroadcastPlacardCounts,
+    dispatch(onRecipientSelectionItemChange(fetchRecipientCounts,
                                             "channel",
                                             isSelected,
                                             [channelId]));
@@ -214,13 +212,13 @@ function onPostModeChange(postMode) {
 }
 
 
-function onQuickpickSubchannelItemChange(fetchBroadcastPlacardCounts, channelName, isSelected) {
+function onQuickpickSubchannelItemChange(fetchRecipientCounts, channelName, isSelected) {
   return (dispatch, getState) => {
     const { postMode, socialBlast, socialPost } = getState();
     const { publishable: { subchannel: publishableSubchannels } } = {socialBlast, socialPost}[postMode];
     const subchannelIds = map(get("id"), filter(flow(get("channel_name"), eq(channelName)), publishableSubchannels));
 
-    dispatch(onRecipientSelectionItemChange(fetchBroadcastPlacardCounts,
+    dispatch(onRecipientSelectionItemChange(fetchRecipientCounts,
                                             "subchannel",
                                             isSelected,
                                             subchannelIds));
@@ -242,7 +240,7 @@ function onRecipientsDropdownToggle() {
 }
 
 
-function onRecipientSelectionItemChange(fetchBroadcastPlacardCounts, recipientSelectionType, recipientIsSelected, recipientSelectionIds) {
+function onRecipientSelectionItemChange(fetchRecipientCounts, recipientSelectionType, recipientIsSelected, recipientSelectionIds) {
   return (dispatch, getState) => {
     const { postMode } = getState();
 
@@ -257,7 +255,7 @@ function onRecipientSelectionItemChange(fetchBroadcastPlacardCounts, recipientSe
       }
     });
 
-    dispatch(debouncedOnFetchedBroadcastPlacardCounts(fetchBroadcastPlacardCounts));
+    dispatch(debouncedOnFetchedBroadcastRecipientCounts(fetchRecipientCounts));
   };
 }
 
