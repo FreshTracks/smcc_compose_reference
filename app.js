@@ -83,7 +83,7 @@ const {
   extractUris,
   effectiveMsgCharCount,
   postPreview,
-} = LumSoc;
+} = LumSoc.init();
 
 const {
   procurePostAssets,
