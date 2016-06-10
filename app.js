@@ -88,7 +88,7 @@ const {
 const {
   procurePostAssets,
   recipientCounts,
-} = LumSoc.endpoints({api_host, api_token});
+} = LumSoc.init().endpoints({api_host, api_token});
 
 
 function renderExample1($root, store) {
